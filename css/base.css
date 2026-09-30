@@ -1,0 +1,84 @@
+/* Token warna, reset, body, dan accessibility. */
+
+:root {
+  --raka-width: 230px;
+  --raka-height: 409px;
+  color-scheme: dark;
+  --ink: #f6efe3;
+  --muted: #cbbfae;
+  --panel: rgba(19, 23, 25, 0.88);
+  --panel-strong: #15191b;
+  --line: rgba(246, 239, 227, 0.18);
+  --gold: #f2b84b;
+  --ember: #e76635;
+  --leaf: #74b86f;
+  --river: #56b6d9;
+  --stone: #9d9384;
+  --danger: #d94d4d;
+  --font-body: "Alegreya", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-display: "Cinzel", "Times New Roman", serif;
+  --game-cursor-default: url("../Assets TLD/items/kursor-24x32.png") 1 1, auto;
+  --game-cursor-pointer: url("../Assets TLD/items/kursor_tangan_seimbang.svg") 7 0, pointer;
+  --game-cursor-disabled: url("../Assets TLD/items/kursor-24x32.png") 1 1, not-allowed;
+  --game-cursor-grab: url("../Assets TLD/items/kursor-24x32.png") 1 1, grab;
+  --game-cursor-grabbing: url("../Assets TLD/items/kursor-24x32.png") 1 1, grabbing;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0e1214;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 700;
+  cursor: var(--game-cursor-default);
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+body.prologue-open {
+  overflow: hidden;
+}
+
+body.ending-open {
+  overflow: hidden;
+}
+
+body.map-open {
+  overflow: hidden;
+}
+
+body.startup-loading {
+  overflow: hidden;
+}
+
+body.tutorial-hints-disabled .map-prompt,
+body.tutorial-hints-disabled .dialog-bubble-copy em,
+body.tutorial-hints-disabled .crystal-hint,
+body.tutorial-hints-disabled .dodge-warning,
+body.tutorial-hints-disabled .level5-walk-instruction small {
+  display: none !important;
+}
+
+body.screen-shake-disabled .dodge-game.hit,
+body.screen-shake-disabled .bridge-choice-grid .nature-choice.wrong {
+  animation: none !important;
+}

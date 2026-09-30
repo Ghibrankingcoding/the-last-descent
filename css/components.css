@@ -1,0 +1,43 @@
+/* Komponen dasar seperti tombol dan state interaktif. */
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #20272a;
+  color: var(--ink);
+  min-height: 42px;
+  padding: 0 14px;
+  font: inherit;
+  cursor: var(--game-cursor-pointer);
+}
+
+a[href],
+summary,
+label[for],
+select:not(:disabled),
+input[type="button"]:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled),
+input[type="range"]:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: var(--game-cursor-pointer);
+}
+
+button:hover,
+button:focus-visible {
+  border-color: var(--gold);
+  outline: none;
+}
+
+button:disabled {
+  cursor: var(--game-cursor-disabled);
+  opacity: 0.45;
+}
+
+.primary {
+  background: var(--gold);
+  color: #20160b;
+  border-color: transparent;
+  font-weight: 800;
+}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <linearGradient id="bottle" x1="66" y1="28" x2="120" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6b3e24"/>
+      <stop offset=".55" stop-color="#1f746c"/>
+      <stop offset="1" stop-color="#0f3434"/>
+    </linearGradient>
+    <linearGradient id="oil" x1="80" y1="82" x2="122" y2="144" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd77a"/>
+      <stop offset="1" stop-color="#b56b20"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="28" fill="#171d1d"/>
+  <path d="M75 31h35v30c0 12 24 24 24 52v23c0 15-12 27-27 27H77c-15 0-27-12-27-27v-23c0-28 25-40 25-52V31z" fill="url(#bottle)"/>
+  <rect x="70" y="21" width="45" height="22" rx="7" fill="#a56a3d"/>
+  <path d="M61 101c18 8 41 10 62 0v34c0 9-7 16-16 16H77c-9 0-16-7-16-16v-34z" fill="url(#oil)" opacity=".88"/>
+  <path d="M85 55c-5 15-17 24-20 40" fill="none" stroke="#d9f3e5" stroke-width="8" stroke-linecap="round" opacity=".24"/>
+</svg>

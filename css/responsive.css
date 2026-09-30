@@ -1,0 +1,249 @@
+/* Penyesuaian layout untuk layar kecil. */
+
+@media (max-width: 860px) {
+  .shell {
+    width: min(100vw - 18px, 640px);
+    padding: 9px 0;
+  }
+
+  .game {
+    grid-template-columns: 1fr;
+  }
+
+  .scene {
+    min-height: 390px;
+  }
+
+  .panel {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  h1 {
+    font-size: 34px;
+  }
+
+  .main-menu {
+    padding: 0;
+  }
+
+  .menu-art {
+    width: 100vw;
+    min-height: 100vh;
+  }
+
+  .menu-content {
+    padding: clamp(24px, 5vh, 46px) 16px clamp(24px, 6vh, 52px);
+  }
+
+  .menu-title {
+    width: min(620px, 92vw);
+    max-height: 24vh;
+  }
+
+  .menu-title img {
+    max-height: 24vh;
+  }
+
+  .menu-actions {
+    width: min(330px, 82vw);
+    gap: 12px;
+  }
+
+  .route,
+  .trial-grid,
+  .choice-grid,
+  .crafting-trial,
+  .click-level,
+  .heritage-drag-level,
+  .heritage-slots,
+  .crystal-grid,
+  .symbol-grid,
+  .corridor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crystal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crystal-grid .crystal:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .tool-tray {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .modal-box.fire-level {
+    overflow: auto;
+  }
+
+  .modal-box.level-screen {
+    overflow: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .settings-toggle-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .settings-toggle {
+    width: 100%;
+  }
+
+  .settings-select {
+    width: 100%;
+  }
+
+  .crystal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crystal-grid .crystal:last-child {
+    grid-column: auto;
+  }
+
+  .prologue-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .prologue-actions button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .knowledge-heading {
+    gap: 12px;
+    text-align: center;
+  }
+
+  .knowledge-torch {
+    width: 56px;
+    height: 98px;
+  }
+
+  .knowledge-reward-icon {
+    width: 74px;
+    height: 74px;
+  }
+
+  .combustion-formula {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .combustion-formula span {
+    min-height: 58px;
+  }
+
+  .combustion-formula>b {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .science-process,
+  .denied-materials {
+    grid-template-columns: 1fr;
+  }
+
+  .science-process span {
+    min-height: 54px;
+    padding-right: 12px;
+  }
+
+  .science-process b {
+    right: auto;
+    bottom: -17px;
+    transform: rotate(90deg);
+  }
+
+  .two-stage-crafting .crafting-table-pov {
+    padding: 220px 10px 18px;
+  }
+
+  .two-stage-crafting .crafting-materials {
+    left: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+
+  .two-stage-crafting .crafting-material {
+    min-height: 112px;
+  }
+
+  .two-stage-crafting .crafting-material img {
+    width: 92px;
+    height: 96px;
+  }
+
+  .base-torch-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .base-craft-slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .base-craft-slots .craft-slot {
+    min-height: 100px;
+  }
+
+  .ignition-combination {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .ignition-combination>b:nth-of-type(2),
+  .lit-torch-result {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .bridge-collected-materials {
+    gap: 6px;
+  }
+
+  .bridge-collected-materials>span {
+    min-width: 0;
+    flex: 1;
+    padding: 6px;
+    font-size: 11px;
+  }
+
+  .bridge-collected-materials img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bridge-crafting-ground {
+    min-height: 500px;
+    padding: 54px 22px;
+  }
+
+  .bridge-process-track,
+  .bridge-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bridge-process-track>span {
+    grid-template-columns: auto 34px 1fr;
+  }
+
+  .bridge-process-track img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .bridge-choice-grid .nature-choice {
+    min-height: 92px;
+  }
+
+  .bridge-choice-grid img {
+    width: 78px;
+    height: 54px;
+  }
+}

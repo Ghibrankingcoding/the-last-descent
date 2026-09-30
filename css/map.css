@@ -1,0 +1,1433 @@
+/* Map perjalanan, side world, objek, pickup, dan HUD peta. */
+
+.world-map {
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  background: #080b0a;
+}
+
+.world-map.hidden {
+  display: none;
+}
+
+.map-backdrop {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #080b0a;
+}
+
+.map-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+
+.map-topbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(10px, 1.8vw, 20px);
+  padding-right: 96px;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.8);
+}
+
+.map-topbar h2 {
+  margin: 2px 0 0;
+  color: #fff2d4;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(20px, 2.8vw, 38px);
+}
+
+.side-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-right: 72px;
+}
+
+.side-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid rgba(242, 184, 75, 0.38);
+  border-radius: 999px;
+  background: rgba(8, 8, 7, 0.64);
+  color: #fff1d7;
+  font-size: 13px;
+  font-weight: 900;
+  backdrop-filter: blur(4px);
+}
+
+.side-stats strong {
+  color: var(--gold);
+  font-size: 16px;
+}
+
+.map-settings {
+  position: fixed;
+  top: clamp(14px, 2vw, 22px);
+  right: clamp(14px, 2vw, 22px);
+  z-index: 6;
+  width: 56px;
+  min-height: 56px;
+  padding: 0;
+  border-color: rgba(242, 184, 75, 0.55);
+  background: rgba(12, 11, 10, 0.82);
+  color: #fff1d7;
+  font-size: 32px;
+  font-weight: 900;
+  backdrop-filter: blur(3px);
+}
+
+.map-route {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 1800px;
+  height: 720px;
+  transform: translateX(0);
+  transform-origin: left top;
+  will-change: transform;
+}
+
+.map-route::before {
+  display: none;
+}
+
+.map-node {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  display: block;
+  width: clamp(74px, 9vw, 118px);
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  box-shadow: none;
+  opacity: 0;
+}
+
+.map-node span {
+  display: block;
+  padding: 0 8px;
+  font-size: clamp(10px, 1vw, 13px);
+}
+
+.map-label {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  left: var(--label-x);
+  top: var(--label-y);
+  transform: translate(-50%, -50%);
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 236, 181, 0.24);
+  border-radius: 999px;
+  background: rgba(22, 16, 10, 0.34);
+  color: rgba(255, 244, 218, 0.86);
+  font-size: clamp(10px, 0.9vw, 13px);
+  font-weight: 900;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(2px);
+}
+
+.map-node.locked {
+  opacity: 0;
+}
+
+.map-node.done {
+  opacity: 0;
+}
+
+.map-node.current {
+  opacity: 0;
+}
+
+.side-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.side-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--side-world-width, 1800px);
+  min-height: 720px;
+  height: 100vh;
+  transform-origin: left top;
+  will-change: transform;
+}
+
+.area-bg {
+  position: absolute;
+  display: none;
+  left: 0;
+  top: 0;
+  width: 100%;
+  min-height: 720px;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.area-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0 52%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.36), transparent 14% 86%, rgba(0, 0, 0, 0.34));
+}
+
+.area-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 18, 22, 0.04), rgba(8, 7, 6, 0.16));
+}
+
+.area-awakening {
+  background:
+    linear-gradient(180deg, rgba(6, 8, 12, 0.04), rgba(6, 8, 12, 0.22)),
+    url("../Assets TLD/background/bg_awal_1.png") center / cover no-repeat;
+}
+
+.area-house {
+  background:
+    linear-gradient(180deg, rgba(17, 13, 9, 0.02), rgba(17, 13, 9, 0.22)),
+    url("../Assets TLD/background/bg_level_1.png") center / cover no-repeat;
+}
+
+.scene-house-inside .area-house {
+  background: url("../Assets TLD/background/dalam_rumah_2.png") center / cover no-repeat;
+}
+
+.scene-house-route .area-house {
+  background: url("../Assets TLD/background/bg_level_1.png") center / 100% 100% no-repeat;
+}
+
+/* Semua area memakai gambar latar murni tanpa elemen pijakan tambahan. */
+.scene-house-inside .area-house::before,
+.scene-house-inside .area-house::after,
+.scene-house-inside .start-gate,
+.scene-house-route .start-gate {
+  display: none;
+}
+
+.scene-transition .area-house {
+  animation: houseSceneFade 640ms ease both;
+}
+
+@keyframes houseSceneFade {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    filter: brightness(0.35);
+  }
+}
+
+.area-forest {
+  background:
+    linear-gradient(180deg, rgba(2, 8, 4, 0.04), rgba(2, 8, 4, 0.34)),
+    url("../Assets TLD/background/bg_level_2.png") center / 100% 100% no-repeat;
+}
+
+.scene-forest.forest-bridge-installed .area-forest {
+  background:
+    linear-gradient(180deg, rgba(2, 8, 4, 0.04), rgba(2, 8, 4, 0.3)),
+    url("../Assets TLD/background/bg_level_2_selesai (2).png") center / 100% 100% no-repeat;
+}
+
+.area-river {
+  background:
+    linear-gradient(180deg, rgba(3, 13, 17, 0.02), rgba(3, 13, 17, 0.22)),
+    url("../Assets TLD/background/bg_level_3_tertutup_new.png") center / 100% 100% no-repeat;
+}
+
+.scene-river.light-door-aligned .area-river {
+  background:
+    linear-gradient(180deg, rgba(3, 13, 17, 0.01), rgba(3, 13, 17, 0.16)),
+    url("../Assets TLD/background/bg_level_3_tertutup_new.png") center / 100% 100% no-repeat;
+}
+
+.scene-river.light-door-open .area-river {
+  background:
+    linear-gradient(180deg, rgba(3, 13, 17, 0.01), rgba(3, 13, 17, 0.16)),
+    url("../Assets TLD/background/bg_level_3_terbuka_1_new.png") center / 100% 100% no-repeat;
+}
+
+.area-heritage {
+  background:
+    linear-gradient(180deg, rgba(12, 8, 4, 0.02), rgba(12, 8, 4, 0.24)),
+    url("../Assets TLD/background/bg_level4_tertutup_fixbanget.png") center / 100% 100% no-repeat;
+  background-color: #111813;
+}
+
+.scene-heritage.heritage-door-open .area-heritage {
+  background:
+    linear-gradient(180deg, rgba(12, 8, 4, 0.01), rgba(12, 8, 4, 0.16)),
+    url("../Assets TLD/background/bg_level_4_terbuka_new.png") center / 100% 100% no-repeat;
+}
+
+.area-cave {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.24)),
+    url("../Assets TLD/background/goa_1_new.png") center / 100% 100% no-repeat;
+  background-color: #050708;
+}
+
+.scene-house .area-house,
+.scene-forest .area-forest,
+.scene-river .area-river,
+.scene-heritage .area-heritage,
+.scene-cave .area-cave {
+  display: block;
+}
+
+.house-pickup,
+.crafting-table-object,
+.forest-pickup,
+.light-pickup,
+.heritage-pickup,
+.nature-craft-ground,
+.chasm-inspection-marker,
+.light-door-marker,
+.heritage-door-marker,
+.cave-door-marker {
+  display: none;
+  position: absolute;
+  z-index: 6;
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.56));
+}
+
+.scene-house-inside .house-pickup,
+.scene-house-inside .crafting-table-object {
+  display: block;
+}
+
+.scene-house-inside .house-object,
+.scene-house-inside .fiber-tree,
+.scene-house-inside .waterfall-crystal,
+.scene-house-inside .heritage-altar,
+.scene-house-inside .cave-gate,
+.scene-house-route .house-object,
+.scene-house-route .fiber-tree,
+.scene-house-route .waterfall-crystal,
+.scene-house-route .heritage-altar,
+.scene-house-route .cave-gate {
+  display: none;
+}
+
+.house-pickup {
+  top: 350px;
+  width: 106px;
+  height: 106px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.pickup-wood {
+  left: 310px;
+  background-image: url("../Assets TLD/items/kayu.png");
+}
+
+.pickup-cloth {
+  left: 610px;
+  background-image: url("../Assets TLD/items/kain.png");
+}
+
+.pickup-oil {
+  left: 910px;
+  background-image: url("../Assets TLD/items/minyak.png");
+}
+
+.pickup-spark {
+  left: 1210px;
+  background-image: url("../Assets TLD/items/percikan.png");
+  background-size: 260%;
+}
+
+.scene-house-inside .pickup-wood[data-collected="true"],
+.scene-house-inside .pickup-cloth[data-collected="true"],
+.scene-house-inside .pickup-oil[data-collected="true"],
+.scene-house-inside .pickup-spark[data-collected="true"] {
+  display: none;
+}
+
+.crafting-table-object {
+  left: 1460px;
+  top: 356px;
+  width: 236px;
+  height: 210px;
+  color: transparent;
+  background: transparent;
+}
+
+.scene-forest .fiber-tree {
+  display: none;
+}
+
+.scene-forest .chasm-inspection-marker {
+  display: grid;
+  left: 1480px;
+  top: 458px;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  border: 2px dashed rgba(255, 217, 120, 0.82);
+  border-radius: 50%;
+  background: rgba(20, 13, 7, 0.62);
+  animation: chasmMarkerPulse 1300ms ease-in-out infinite;
+}
+
+.chasm-inspection-marker span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 7px;
+  background: #f2b84b;
+  color: #17100b;
+  font-weight: 1000;
+}
+
+.scene-forest.forest-inspected:not(.forest-bridge-ready) .chasm-inspection-marker,
+.scene-forest.forest-bridge-installed .chasm-inspection-marker {
+  display: none;
+}
+
+.scene-forest.forest-bridge-ready:not(.forest-bridge-installed) .chasm-inspection-marker {
+  display: grid;
+  border-color: #82db8b;
+}
+
+.scene-river.light-door-nearby:not(.area-clear) .light-door-marker {
+  display: grid;
+}
+
+.scene-heritage.heritage-door-nearby:not(.area-clear) .heritage-door-marker {
+  display: grid;
+}
+
+.scene-cave.cave-door-nearby:not(.area-clear) .cave-door-marker {
+  display: grid;
+}
+
+.light-door-marker {
+  left: 2578px;
+  top: calc(var(--side-ground-y, 588px) - 172px);
+  width: 170px;
+  min-height: 92px;
+  place-items: center;
+  gap: 6px;
+  padding: 10px;
+  border: 2px dashed rgba(255, 221, 132, 0.88);
+  border-radius: 12px;
+  background: rgba(12, 15, 12, 0.78);
+  color: #fff0ca;
+  text-align: center;
+  animation: chasmMarkerPulse 1300ms ease-in-out infinite;
+}
+
+.light-door-marker span {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 7px;
+  background: #f2b84b;
+  color: #17100b;
+  font-size: 21px;
+  font-weight: 1000;
+}
+
+.light-door-marker b {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.light-pickup {
+  top: calc(var(--side-ground-y, 506px) - 132px);
+  width: 126px;
+  height: 126px;
+  pointer-events: none;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter:
+    drop-shadow(0 0 10px rgba(131, 224, 255, 0.98))
+    drop-shadow(0 0 22px rgba(242, 184, 75, 0.72))
+    drop-shadow(0 12px 10px rgba(0, 0, 0, 0.72));
+  animation: lightPickupFloat 1100ms ease-in-out infinite alternate;
+}
+
+.scene-river.light-door-inspected .light-pickup[data-collected="false"] {
+  display: block;
+}
+
+.light-fragment-1 {
+  left: 434px;
+  background-image: url("../Assets TLD/items/pecahan_kaca_1.png");
+}
+
+.light-fragment-2 {
+  left: 860px;
+  background-image: url("../Assets TLD/items/pecahan_kaca_2.png");
+}
+
+.light-fragment-3 {
+  left: 1286px;
+  background-image: url("../Assets TLD/items/pecahan_kaca_3.png");
+}
+
+.light-fragment-4 {
+  left: 1712px;
+  background-image: url("../Assets TLD/items/pecahan_kaca_4.png");
+}
+
+.light-fragment-5 {
+  left: 2138px;
+  background-image: url("../Assets TLD/items/pecahan_kaca_5.png");
+}
+
+.light-pickup::after {
+  content: "E · AMBIL";
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 8px);
+  min-width: 78px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 226, 151, 0.82);
+  border-radius: 999px;
+  background: rgba(9, 16, 18, 0.88);
+  color: #fff0ca;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.06em;
+  text-align: center;
+  transform: translateX(-50%);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes lightPickupFloat {
+  from {
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    transform: translateY(-8px) scale(1.05);
+  }
+}
+
+.heritage-pickup {
+  top: calc(var(--side-ground-y, 506px) - 84px);
+  width: 84px;
+  height: 84px;
+  pointer-events: none;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.scene-heritage.heritage-door-inspected .heritage-pickup[data-collected="false"] {
+  display: block;
+}
+
+.heritage-sun-pickup {
+  left: 188px;
+  background-image: url("../Assets TLD/items/batu_matahari.png");
+}
+
+.heritage-river-pickup {
+  left: 348px;
+  background-image: url("../Assets TLD/items/batu_sungai.png");
+}
+
+.heritage-mountain-pickup {
+  left: 508px;
+  background-image: url("../Assets TLD/items/batu_gunung.png");
+}
+
+.heritage-home-pickup {
+  left: 668px;
+  background-image: url("../Assets TLD/items/batu_rumah.png");
+}
+
+.heritage-fire-pickup {
+  left: 828px;
+  background-image: url("../Assets TLD/items/batu_api.png");
+}
+
+.heritage-leaf-pickup {
+  left: 988px;
+  background-image: url("../Assets TLD/items/batu_daun.png");
+}
+
+.heritage-stone-pickup {
+  left: 1148px;
+  background-image: url("../Assets TLD/items/batu_batu.png");
+}
+
+.heritage-moon-pickup {
+  left: 1308px;
+  background-image: url("../Assets TLD/items/batu_bulan.png");
+}
+
+.heritage-door-marker {
+  left: 1415px;
+  top: calc(var(--side-ground-y, 506px) - 172px);
+  width: 170px;
+  min-height: 92px;
+  place-items: center;
+  gap: 6px;
+  padding: 10px;
+  border: 2px dashed rgba(255, 221, 132, 0.88);
+  border-radius: 12px;
+  background: rgba(12, 15, 12, 0.78);
+  color: #fff0ca;
+  text-align: center;
+  animation: chasmMarkerPulse 1300ms ease-in-out infinite;
+}
+
+.heritage-door-marker span {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 7px;
+  background: #f2b84b;
+  color: #17100b;
+  font-size: 21px;
+  font-weight: 1000;
+}
+
+.heritage-door-marker b {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.cave-door-marker {
+  left: 1115px;
+  top: calc(var(--side-ground-y, 588px) - 230px);
+  width: 170px;
+  min-height: 92px;
+  place-items: center;
+  gap: 6px;
+  padding: 10px;
+  border: 2px dashed rgba(255, 221, 132, 0.88);
+  border-radius: 12px;
+  background: rgba(7, 8, 8, 0.8);
+  color: #fff0ca;
+  text-align: center;
+  animation: chasmMarkerPulse 1300ms ease-in-out infinite;
+}
+
+.cave-door-marker span {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 7px;
+  background: #f2b84b;
+  color: #17100b;
+  font-size: 21px;
+  font-weight: 1000;
+}
+
+.cave-door-marker b {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.scene-forest.forest-inspected .forest-pickup[data-collected="false"] {
+  display: block;
+}
+
+.forest-pickup {
+  top: calc(var(--side-ground-y, 588px) - 112px);
+  width: 112px;
+  height: 112px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.forest-fiber-pickup {
+  left: 477px;
+  background-image: url("../Assets TLD/items/serat_tumbuhan.png");
+}
+
+.forest-wood-pickup {
+  left: 938px;
+  background-image: url("../Assets TLD/items/kayu_jembatan.png");
+}
+
+.scene-forest.forest-materials-ready:not(.forest-bridge-ready) .nature-craft-ground {
+  display: grid;
+}
+
+.nature-craft-ground {
+  left: 1166px;
+  top: calc(var(--side-ground-y, 588px) - 126px);
+  width: 188px;
+  height: 116px;
+  place-items: end center;
+  padding-bottom: 7px;
+  background: url("../Assets TLD/background/ground_craft_level2.png") center / contain no-repeat;
+  color: #fff0ca;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 8px #000;
+}
+
+.nature-craft-ground::before {
+  content: "E";
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid rgba(255, 239, 192, 0.88);
+  border-radius: 7px;
+  background: #f2b84b;
+  color: #17100b;
+  font-size: 18px;
+  font-weight: 1000;
+  transform: translateX(-50%);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.48);
+}
+
+@keyframes chasmMarkerPulse {
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 18px rgba(255, 211, 105, 0.72));
+  }
+}
+
+@keyframes forestItemFloat {
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.collision-debug-layer,
+.collision-debug-player,
+.collision-debug-hud {
+  display: none;
+  pointer-events: none;
+}
+
+body.collision-debug-active .collision-debug-layer,
+body.collision-debug-active .collision-debug-player,
+body.collision-debug-active .collision-debug-hud {
+  display: block;
+}
+
+.collision-debug-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.collision-debug-box {
+  position: absolute;
+  border: 2px solid #ff4d5f;
+  background: rgba(255, 45, 70, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.72);
+}
+
+.collision-debug-box.one-way {
+  border-color: #55e67a;
+  border-style: dashed;
+  background: rgba(60, 226, 105, 0.14);
+}
+
+.collision-debug-box.one-way::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: -4px;
+  height: 4px;
+  background: #55e67a;
+}
+
+.collision-debug-box.trigger {
+  border-color: #ffd84f;
+  border-style: dashed;
+  background: rgba(255, 216, 79, 0.08);
+}
+
+.collision-debug-box b,
+.collision-debug-boundary b {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font: 700 10px/1.2 Consolas, monospace;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.collision-debug-player {
+  position: absolute;
+  z-index: 22;
+  transform: translateX(-50%);
+  border: 2px solid #35ddff;
+  background: rgba(53, 221, 255, 0.2);
+  color: #d8faff;
+  font: 800 9px/1 Consolas, monospace;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.72), 0 0 12px rgba(53, 221, 255, 0.52);
+}
+
+.collision-debug-boundary {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px dashed #c76dff;
+}
+
+.collision-debug-boundary b {
+  top: 110px;
+  left: 4px;
+  color: #e9caff;
+}
+
+.collision-debug-hud {
+  position: fixed;
+  z-index: 12;
+  right: clamp(14px, 2vw, 24px);
+  bottom: clamp(14px, 2vw, 24px);
+  max-width: min(520px, calc(100vw - 28px));
+  padding: 10px 12px;
+  border: 1px solid rgba(53, 221, 255, 0.72);
+  border-radius: 6px;
+  background: rgba(3, 10, 14, 0.9);
+  color: #d8faff;
+  font: 700 11px/1.4 Consolas, monospace;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.collision-debug-hud strong,
+.collision-debug-hud span,
+.collision-debug-hud small {
+  display: block;
+}
+
+.collision-debug-hud span {
+  margin-top: 3px;
+}
+
+.collision-debug-hud small {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.collision-debug-hud i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin: 0 2px 0 7px;
+  border: 1px solid currentColor;
+  vertical-align: -1px;
+}
+
+.collision-debug-hud i:first-child {
+  margin-left: 0;
+}
+
+.collision-debug-hud i.player {
+  color: #35ddff;
+}
+
+.collision-debug-hud i.solid {
+  color: #ff4d5f;
+}
+
+.collision-debug-hud i.one-way {
+  color: #55e67a;
+}
+
+.collision-debug-hud i.trigger {
+  color: #ffd84f;
+}
+
+.side-object {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  color: #fff2d4;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.84);
+  pointer-events: none;
+}
+
+.start-gate {
+  left: 84px;
+  top: 508px;
+  width: 120px;
+  height: 82px;
+  border: 2px solid rgba(242, 184, 75, 0.3);
+  border-radius: 8px 8px 0 0;
+  background: rgba(26, 22, 18, 0.42);
+}
+
+.house-object {
+  left: 1040px;
+  top: 392px;
+  width: 260px;
+  height: 198px;
+  align-items: start;
+  padding-top: 24px;
+  color: transparent;
+  background: url("../Assets TLD/background/luar_rumah_2.png") center / contain no-repeat;
+}
+
+.scene-forest .house-object,
+.scene-river .house-object,
+.scene-heritage .house-object,
+.scene-cave .house-object,
+.scene-forest .start-gate,
+.scene-river .start-gate,
+.scene-heritage .start-gate,
+.scene-cave .start-gate,
+.scene-house .fiber-tree,
+.scene-river .fiber-tree,
+.scene-heritage .fiber-tree,
+.scene-cave .fiber-tree,
+.scene-house .waterfall-crystal,
+.scene-forest .waterfall-crystal,
+.scene-river .waterfall-crystal,
+.scene-heritage .waterfall-crystal,
+.scene-cave .waterfall-crystal,
+.scene-house .heritage-altar,
+.scene-forest .heritage-altar,
+.scene-river .heritage-altar,
+.scene-heritage .heritage-altar,
+.scene-cave .heritage-altar,
+.scene-house .cave-gate,
+.scene-forest .cave-gate,
+.scene-river .cave-gate,
+.scene-heritage .cave-gate {
+  display: none;
+}
+
+.fiber-tree {
+  left: 1060px;
+  top: 292px;
+  width: 240px;
+  height: 278px;
+  border-radius: 48% 52% 8px 8px;
+  color: transparent;
+  background: url("../Assets TLD/items/kayu.png") center / contain no-repeat;
+  align-items: start;
+  padding-top: 60px;
+}
+
+.waterfall-crystal {
+  left: 1180px;
+  top: 378px;
+  width: 170px;
+  height: 170px;
+  color: #dff8ff;
+  color: transparent;
+  background: url("../Assets TLD/items/map_piece_1.png") center / contain no-repeat;
+}
+
+.heritage-altar {
+  left: 1035px;
+  top: 406px;
+  width: 270px;
+  height: 114px;
+  border-radius: 8px 8px 0 0;
+  color: transparent;
+  background: url("../Assets TLD/items/catatan_nenek_1.png") center / contain no-repeat;
+}
+
+.map-prompt {
+  position: absolute;
+  z-index: 4;
+  left: clamp(14px, 2vw, 24px);
+  top: clamp(106px, 13vh, 132px);
+  width: min(430px, calc(100vw - 28px));
+  overflow: hidden;
+  border: 1px solid rgba(242, 184, 75, 0.34);
+  border-radius: 10px;
+  background: rgba(8, 10, 9, 0.82);
+  color: #fff1d7;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 800;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+}
+
+.map-prompt > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 54px;
+  padding: 9px 12px;
+  cursor: var(--game-cursor-pointer);
+  list-style: none;
+  user-select: none;
+}
+
+.map-prompt > summary::-webkit-details-marker {
+  display: none;
+}
+
+.map-guide-heading {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.map-guide-heading small {
+  color: var(--gold);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.map-guide-heading strong {
+  overflow: hidden;
+  color: #fff1d7;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.map-guide-summary {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-guide-summary b {
+  min-width: 42px;
+  padding: 4px 8px;
+  border: 1px solid rgba(242, 184, 75, 0.34);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.32);
+  color: #ffd47b;
+  font-size: 11px;
+  text-align: center;
+}
+
+.map-guide-summary b.complete {
+  border-color: rgba(104, 203, 118, 0.5);
+  color: #9dec9f;
+}
+
+.map-guide-summary i {
+  color: #f2b84b;
+  font-size: 18px;
+  font-style: normal;
+  transition: transform 180ms ease;
+}
+
+.map-prompt[open] .map-guide-summary i {
+  transform: rotate(180deg);
+}
+
+.map-prompt[open] > summary {
+  border-bottom: 1px solid rgba(242, 184, 75, 0.18);
+}
+
+.map-guide-body {
+  max-height: min(370px, calc(100vh - 230px));
+  padding: 11px 12px 12px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(242, 184, 75, 0.55) rgba(0, 0, 0, 0.24);
+}
+
+.map-guide-body > p {
+  margin: 0 0 10px;
+  color: #dfd4c1;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.map-guide-checklist {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.map-guide-checklist li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.map-guide-checklist li::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 222, 157, 0.52);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.map-guide-checklist li.done {
+  border-color: rgba(104, 203, 118, 0.24);
+  background: rgba(66, 132, 72, 0.12);
+}
+
+.map-guide-checklist li.done::before {
+  content: "\2713";
+  display: grid;
+  place-items: center;
+  border-color: #76cf7e;
+  background: #4d9e58;
+  color: #071109;
+  font-size: 11px;
+  font-weight: 1000;
+  line-height: 1;
+}
+
+.map-guide-checklist li span {
+  min-width: 0;
+  color: #f4ead7;
+}
+
+.map-guide-checklist li.done span {
+  color: #9eb09e;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+.map-guide-checklist li small {
+  color: #c0af94;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.map-guide-checklist li.done small {
+  color: #86d28c;
+}
+
+.map-popup {
+  position: absolute;
+  z-index: 5;
+  left: clamp(16px, 3vw, 34px);
+  bottom: clamp(86px, 11vw, 126px);
+  width: min(390px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid rgba(242, 184, 75, 0.38);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(30, 22, 15, 0.88), rgba(10, 10, 9, 0.86)),
+    rgba(12, 12, 10, 0.88);
+  color: #fff1d7;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(6px);
+}
+
+.map-popup.hidden {
+  display: none;
+}
+
+.map-popup h3 {
+  margin: 3px 38px 8px 0;
+  color: #fff2d4;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.map-popup p {
+  color: #eadbc4;
+  line-height: 1.5;
+}
+
+.map-popup .primary {
+  width: 100%;
+  margin-top: 12px;
+  font-weight: 900;
+}
+
+.map-popup.mission-complete {
+  border-color: rgba(181, 187, 188, 0.54);
+  background: linear-gradient(180deg, rgba(62, 65, 64, 0.94), rgba(31, 34, 34, 0.94));
+}
+
+.map-popup.mission-complete .primary:disabled {
+  border-color: rgba(226, 230, 230, 0.28);
+  background: #74797a;
+  color: #f4f5f3;
+  opacity: 1;
+}
+
+.map-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  min-height: 34px;
+  padding: 0;
+  border-color: rgba(242, 184, 75, 0.28);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff2d4;
+}
+
+.shell {
+  display: none;
+}
+
+.game {
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #14191b;
+}
+
+.scene {
+  position: relative;
+  min-height: 620px;
+  overflow: hidden;
+  background: linear-gradient(#28383d 0%, #172023 52%, #0c0f10 100%);
+}
+
+.sky,
+.mountains,
+.path,
+.mist {
+  position: absolute;
+  inset: 0;
+}
+
+.sky::before {
+  content: "";
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  top: 44px;
+  right: 16%;
+  border-radius: 50%;
+  background: #f0d78f;
+  box-shadow: 0 0 28px rgba(240, 215, 143, 0.42);
+}
+
+.mountains {
+  background:
+    linear-gradient(135deg, transparent 0 42%, #263337 43% 58%, transparent 59%) 3% 38% / 360px 260px no-repeat,
+    linear-gradient(135deg, transparent 0 43%, #334145 44% 60%, transparent 61%) 38% 34% / 430px 300px no-repeat,
+    linear-gradient(135deg, transparent 0 41%, #202a2e 42% 60%, transparent 61%) 80% 40% / 380px 270px no-repeat;
+}
+
+.path {
+  clip-path: polygon(44% 0, 56% 0, 68% 100%, 23% 100%);
+  background: linear-gradient(180deg, #665848, #2e2924);
+  opacity: 0.92;
+}
+
+.mist {
+  background:
+    radial-gradient(ellipse at 18% 76%, rgba(207, 223, 219, 0.18), transparent 36%),
+    radial-gradient(ellipse at 68% 68%, rgba(207, 223, 219, 0.14), transparent 35%);
+  pointer-events: none;
+}
+
+.panel {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.04;
+}
+
+h1 {
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.stats div,
+.story {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.stats div {
+  padding: 10px;
+}
+
+.stats span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 18px;
+}
+
+.inventory {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 42px;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 11px;
+  background: #20272a;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.item img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.38));
+}
+
+.story {
+  padding: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+  min-height: 160px;
+}
+
+.controls {
+  margin-top: auto;
+  display: grid;
+  gap: 9px;
+}
+
+.route {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.node {
+  min-height: 92px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #161b1d;
+  color: var(--muted);
+  text-align: left;
+}
+
+.node strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.node.done {
+  border-color: rgba(183, 190, 190, 0.48);
+  background: #383d3e;
+  color: #ecefed;
+}
+
+.node.done:disabled {
+  opacity: 1;
+}
+
+.node-status {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f0f2ef;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.node.current {
+  border-color: var(--gold);
+  background: #241f16;
+}
+
+.node.done.current {
+  border-color: rgba(183, 190, 190, 0.48);
+  background: #383d3e;
+}

@@ -1,0 +1,208 @@
+/* Loading screen pembuka dan progress bar. */
+
+.startup-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: #020507;
+}
+
+.startup-loader[hidden] {
+  display: none;
+}
+
+.startup-splash {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 850ms ease-in-out;
+}
+
+.startup-splash.is-visible {
+  opacity: 1;
+}
+
+.startup-brand {
+  background: #fff;
+}
+
+.startup-brand img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.startup-game {
+  background: #071523;
+}
+
+.startup-loading-art {
+  position: relative;
+  width: max(100vw, 177.683vh);
+  aspect-ratio: 1672 / 941;
+  overflow: hidden;
+}
+
+.startup-loading-art > img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.startup-loading-panel {
+  position: absolute;
+  z-index: 1;
+  top: 70.5%;
+  left: 65%;
+  width: 34%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.startup-progress {
+  position: relative;
+  height: clamp(7px, 0.75vw, 12px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 218, 157, 0.72);
+  border-radius: 999px;
+  background: rgba(3, 12, 21, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(7, 18, 28, 0.62),
+    0 0 18px rgba(242, 184, 75, 0.18),
+    inset 0 1px 3px rgba(0, 0, 0, 0.72);
+}
+
+.startup-progress span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  overflow: hidden;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #b66a24 0%, #f2b84b 52%, #ffe2a0 100%);
+  box-shadow: 0 0 14px rgba(255, 191, 83, 0.72);
+  transition: width 90ms linear;
+}
+
+.startup-progress span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 42%;
+  transform: translateX(-120%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+  animation: startupProgressShimmer 1.25s ease-in-out infinite;
+}
+
+.startup-loading-status {
+  margin: clamp(7px, 0.75vw, 12px) 0 0;
+  color: #ffe4ad;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.68rem, 0.9vw, 0.92rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-shadow: 0 2px 7px rgba(0, 0, 0, 0.92);
+}
+
+.startup-fullscreen-prompt {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(16px, 3vh, 32px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 226, 170, 0.55);
+  border-radius: 999px;
+  background: rgba(5, 12, 18, 0.72);
+  color: #ffe5b4;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.28);
+  transition: border-color 160ms ease, background 160ms ease, opacity 200ms ease;
+}
+
+.startup-fullscreen-prompt:hover,
+.startup-fullscreen-prompt:focus-visible {
+  border-color: #ffe0a1;
+  background: rgba(17, 27, 34, 0.88);
+}
+
+.startup-fullscreen-prompt span {
+  font-size: 1rem;
+}
+
+.startup-fullscreen-prompt[hidden] {
+  display: none;
+}
+
+.startup-enter-prompt {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: clamp(38px, 8vh, 82px);
+  min-width: min(310px, calc(100vw - 40px));
+  min-height: 54px;
+  padding: 0 28px;
+  border: 1px solid rgba(255, 222, 158, 0.78);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(171, 103, 36, 0.98), rgba(82, 43, 18, 0.98));
+  color: #fff0c9;
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.68);
+  transform: translateX(-50%);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55), 0 0 24px rgba(242, 184, 75, 0.2);
+  animation: startupEnterPulse 1.7s ease-in-out infinite alternate;
+}
+
+.startup-enter-prompt[hidden] {
+  display: none;
+}
+
+@keyframes startupEnterPulse {
+  from {
+    filter: brightness(0.94);
+    transform: translateX(-50%) scale(0.99);
+  }
+
+  to {
+    filter: brightness(1.12);
+    transform: translateX(-50%) scale(1.015);
+  }
+}
+
+body.startup-loading .main-menu {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.startup-loading .menu-title,
+body.startup-loading .menu-actions button {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes startupProgressShimmer {
+  to {
+    transform: translateX(340%);
+  }
+}

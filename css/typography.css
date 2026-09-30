@@ -1,0 +1,23 @@
+/* Tipografi sinematik yang konsisten untuk seluruh permainan. */
+
+body,
+body * {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+}
+
+body :is(h1, h2, h3, h4, h5, h6, button, summary, .eyebrow, .level-label, .location-name),
+body :is(h1, h2, h3, h4, h5, h6, button, summary, .eyebrow, .level-label, .location-name) * {
+  font-family: var(--font-display) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.035em;
+}
+
+body :is(strong, b) {
+  font-weight: 900 !important;
+}
+
+body :is(input, textarea, select) {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+}

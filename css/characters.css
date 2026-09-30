@@ -1,0 +1,362 @@
+/* Raka, Cahaya Nenek, dan karakter pada peta. */
+
+.map-player {
+  --face: 1;
+  --raka-frame: url("../Assets TLD/character/raka_idle.png?v=20260922-raka-v2");
+  --raka-frame-y: 0px;
+  position: absolute;
+  z-index: 8;
+  left: 210px;
+  top: 472px;
+  width: var(--raka-width, 166px);
+  height: var(--raka-height, 296px);
+  transform: translate(-50%, -100%) scaleX(var(--face));
+  transform-origin: center bottom;
+  background: var(--raka-frame) center calc(100% + var(--raka-frame-y)) / contain no-repeat;
+  filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.54));
+  contain: layout paint;
+  will-change: left, transform;
+  transition: opacity 140ms ease;
+}
+
+.map-player.raka-spawning {
+  opacity: 0;
+}
+
+.map-player.facing-left {
+  --face: -1;
+}
+
+.map-player.walking {
+  animation: rakaSideWalk var(--raka-walk-cycle, 672ms) cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.map-player::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 189, 76, 0.34), rgba(255, 132, 47, 0.13) 36%, transparent 68%);
+  opacity: 0;
+  transform: translate(-50%, -50%) scaleX(var(--face));
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.scene-forest .map-player::after,
+.scene-cave .map-player::after {
+  opacity: 1;
+}
+
+.map-player .head,
+.map-player .body,
+.map-player .torch {
+  position: absolute;
+  display: none;
+}
+
+/* Sprite PNG Raka sudah membawa obor sendiri; jangan tumpuk obor CSS lama. */
+.map-player .torch,
+.scene-forest .map-player .torch,
+.scene-cave .map-player .torch {
+  display: none !important;
+}
+
+.map-player .torch {
+  display: block;
+  right: 3px;
+  top: 42px;
+  width: 6px;
+  height: 28px;
+  border-radius: 2px;
+  background: #74451f;
+  opacity: 0;
+}
+
+.map-player .torch::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: -13px;
+  width: 20px;
+  height: 22px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle, #ffe36b 0 28%, #ff7a2d 55%, transparent 62%);
+}
+
+.scene-forest .map-player .torch,
+.scene-cave .map-player .torch {
+  opacity: 1;
+}
+
+@keyframes rakaSideWalk {
+  0%,
+  50%,
+  100% {
+    transform: translate(-50%, -100%) translateY(0) scaleX(var(--face));
+  }
+
+  25%,
+  75% {
+    transform: translate(-50%, -100%) translateY(-1px) scaleX(var(--face));
+  }
+}
+
+
+
+.witch-companion {
+  position: absolute;
+  z-index: 7;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(circle, #fff 0 12%, #d9f6ff 20%, #78d8ff 42%, rgba(78, 168, 255, 0.38) 62%, transparent 74%);
+  box-shadow: 0 0 12px #d9f6ff, 0 0 28px rgba(104, 207, 255, 0.9), 0 0 54px rgba(95, 139, 255, 0.58);
+  transform: translate(-50%, -100%);
+  animation: witchFloat 1700ms ease-in-out infinite;
+  transition: left 160ms linear, top 160ms linear, opacity 180ms ease;
+  pointer-events: none;
+}
+
+.witch-speaking .witch-companion {
+  opacity: 1;
+}
+
+.witch-companion::before,
+.witch-companion::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(203, 239, 255, 0.5);
+  transform: translate(-50%, -50%);
+  animation: grandmaLightPulse 1700ms ease-out infinite;
+}
+
+.witch-companion::after {
+  animation-delay: 850ms;
+}
+
+.witch-hat {
+  display: none;
+  position: absolute;
+  left: 7px;
+  top: 0;
+  width: 40px;
+  height: 28px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: rgba(63, 54, 94, 0.9);
+}
+
+.witch-head {
+  display: none;
+  position: absolute;
+  left: 16px;
+  top: 24px;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: rgba(223, 205, 182, 0.86);
+}
+
+.witch-body {
+  display: none;
+  position: absolute;
+  left: 10px;
+  top: 45px;
+  width: 34px;
+  height: 41px;
+  border-radius: 16px 16px 8px 8px;
+  background: rgba(76, 61, 111, 0.82);
+}
+
+.witch-bubble {
+  position: absolute;
+  z-index: 9;
+  width: min(430px, calc(100vw - 44px));
+  min-height: 104px;
+  padding: 10px 12px;
+  border: 1px solid rgba(196, 226, 255, 0.58);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(7, 9, 17, 0.88));
+  color: #edf7ff;
+  font-size: 14px;
+  line-height: 1.35;
+  transform: translate(-15%, -100%);
+  transition: left 160ms linear, top 160ms linear, opacity 160ms ease, transform 160ms ease;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.witch-speaking .witch-bubble,
+.raka-speaking .witch-bubble,
+.dialog-speaking .witch-bubble {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.raka-speaking .witch-bubble {
+  transform: translate(-50%, -100%);
+  border-color: rgba(242, 184, 75, 0.72);
+  background: linear-gradient(180deg, rgba(38, 27, 16, 0.94), rgba(13, 10, 8, 0.92));
+}
+
+.raka-speaking .witch-bubble strong {
+  color: var(--gold);
+}
+
+.dialog-bubble-copy,
+.witch-bubble strong,
+.witch-bubble span,
+.witch-bubble em {
+  display: block;
+}
+
+.dialog-bubble-portrait {
+  display: block;
+  width: 68px;
+  height: 84px;
+  align-self: end;
+  object-fit: contain;
+  object-position: center bottom;
+  border: 1px solid rgba(255, 239, 196, 0.25);
+  border-radius: 6px;
+  background: radial-gradient(circle at 50% 28%, rgba(242, 184, 75, 0.22), rgba(7, 9, 17, 0.52) 68%);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.46));
+}
+
+.dialog-bubble-copy {
+  min-width: 0;
+}
+
+.witch-bubble strong {
+  color: #bfe8ff;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.witch-bubble span {
+  margin-top: 5px;
+  color: #fff8e8;
+}
+
+.witch-bubble em {
+  margin-top: 9px;
+  color: rgba(237, 247, 255, 0.64);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+@media (max-width: 520px) {
+  .witch-bubble {
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 9px;
+    min-height: 108px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .dialog-bubble-portrait {
+    width: 68px;
+    height: 90px;
+  }
+}
+
+@keyframes witchFloat {
+
+  0%,
+  100% {
+    transform: translate(-50%, -100%) translateY(0);
+  }
+
+  50% {
+    transform: translate(-50%, -100%) translateY(-8px);
+  }
+}
+
+@keyframes grandmaLightPulse {
+  from {
+    width: 16px;
+    height: 16px;
+    opacity: 0.9;
+  }
+
+  to {
+    width: 74px;
+    height: 74px;
+    opacity: 0;
+  }
+}
+
+
+
+
+.raka {
+  position: absolute;
+  width: 70px;
+  height: 108px;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%, -50%);
+  transition: top 520ms ease, left 520ms ease;
+  filter: drop-shadow(0 14px 14px rgba(0, 0, 0, 0.4));
+}
+
+.head,
+.body,
+.torch {
+  position: absolute;
+  display: block;
+}
+
+.head {
+  width: 26px;
+  height: 26px;
+  left: 15px;
+  top: 0;
+  border-radius: 50%;
+  background: #bf7c51;
+}
+
+.body {
+  width: 34px;
+  height: 50px;
+  left: 11px;
+  top: 28px;
+  border-radius: 14px 14px 8px 8px;
+  background: #496d83;
+}
+
+.torch {
+  width: 9px;
+  height: 42px;
+  right: 4px;
+  top: 25px;
+  border-radius: 6px;
+  background: #6e4931;
+}
+
+.torch::before {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 28px;
+  left: -8px;
+  top: -20px;
+  border-radius: 50% 50% 48% 48%;
+  background: var(--ember);
+  box-shadow: 0 0 24px rgba(231, 102, 53, 0.78);
+}

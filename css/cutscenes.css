@@ -1,0 +1,442 @@
+/* Prolog dan tampilan dialog cerita. */
+
+.prologue-scene {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  display: grid;
+  place-items: end center;
+  padding: 18px 24px;
+}
+
+.prologue-scene::before,
+.prologue-scene::after {
+  content: "";
+  position: absolute;
+  inset: -6%;
+  pointer-events: none;
+}
+
+.prologue-scene::before {
+  z-index: 0;
+  background: var(--prologue-bg, url("../Assets TLD/background/bg_awal_1.png")) center / cover no-repeat;
+  animation: slowScene 18s ease-in-out infinite alternate;
+}
+
+.prologue-scene::after {
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(4, 3, 3, 0.16), rgba(4, 3, 3, 0.76)),
+    radial-gradient(ellipse at center, transparent 0 44%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+@keyframes slowScene {
+  from {
+    transform: scale(1.04) translate3d(-1.2%, -0.8%, 0);
+  }
+
+  to {
+    transform: scale(1.13) translate3d(1.4%, 1%, 0);
+  }
+}
+
+.prologue-card {
+  position: relative;
+  z-index: 2;
+  width: min(1360px, calc(100vw - 48px));
+  margin-bottom: clamp(10px, 2vh, 24px);
+  padding: clamp(14px, 2vw, 22px);
+  border: 1px solid rgba(242, 184, 75, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(31, 22, 16, 0.92), rgba(13, 12, 11, 0.94)),
+    rgba(17, 18, 18, 0.94);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  display: grid;
+  grid-template-columns: clamp(132px, 15vw, 190px) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(16px, 2.2vw, 30px);
+  min-height: clamp(178px, 25vh, 250px);
+  overflow: hidden;
+}
+
+.prologue-portrait-frame {
+  position: relative;
+  min-height: 170px;
+  align-self: stretch;
+  border: 1px solid rgba(242, 184, 75, 0.32);
+  border-radius: 7px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(242, 184, 75, 0.2), transparent 58%),
+    linear-gradient(180deg, rgba(71, 49, 29, 0.58), rgba(12, 10, 9, 0.82));
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.4);
+}
+
+.prologue-portrait-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 -28px 34px rgba(7, 6, 5, 0.42);
+  pointer-events: none;
+}
+
+.prologue-portrait {
+  position: absolute;
+  inset: 6px 0 0;
+  width: 100%;
+  height: calc(100% - 6px);
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.48));
+}
+
+.prologue-dialog-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.prologue-card h2 {
+  color: #fff2d4;
+  font-family: var(--font-display);
+  margin: 2px 0 8px;
+  font-size: clamp(22px, 3vw, 34px);
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.65);
+}
+
+.prologue-card p {
+  color: var(--muted);
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.5;
+}
+
+#prologueText {
+  min-height: 24px;
+  margin: 0;
+  color: #f8ead1;
+  font-size: clamp(16px, 1.35vw, 20px);
+  font-weight: 700;
+}
+
+#prologueText.typing::after {
+  content: "|";
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--gold);
+  animation: caretBlink 700ms steps(1) infinite;
+}
+
+@keyframes caretBlink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.prologue-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+  .prologue-scene {
+    padding: 12px;
+  }
+
+  .prologue-card {
+    width: calc(100vw - 24px);
+    grid-template-columns: 102px minmax(0, 1fr);
+    gap: 12px;
+    min-height: 160px;
+    padding: 11px;
+  }
+
+  .prologue-portrait-frame {
+    min-height: 142px;
+  }
+
+  .prologue-card h2 {
+    font-size: clamp(18px, 6vw, 25px);
+  }
+
+  #prologueText {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .prologue-footer {
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .prologue-actions {
+    gap: 6px;
+  }
+
+  .prologue-footer button {
+    min-width: 0;
+    padding-inline: 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-height: 520px) {
+  .prologue-card {
+    min-height: 0;
+    grid-template-columns: 112px minmax(0, 1fr);
+    margin-bottom: 0;
+    padding: 10px 12px;
+  }
+
+  .prologue-portrait-frame {
+    min-height: 130px;
+  }
+
+  .prologue-card h2 {
+    margin-bottom: 4px;
+    font-size: 20px;
+  }
+
+  #prologueText {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .prologue-footer {
+    margin-top: 8px;
+  }
+}
+
+.prologue-footer span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.prologue-footer button {
+  min-width: 132px;
+}
+
+.prologue-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.prologue-actions .secondary {
+  border-color: rgba(255, 242, 212, 0.28);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff2d4;
+}
+
+.prologue-actions .secondary:hover,
+.prologue-actions .secondary:focus-visible {
+  border-color: var(--gold);
+  background: rgba(242, 184, 75, 0.14);
+}
+
+.menu-art {
+  width: 100vw;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  background: #172016 url("../Assets TLD/background/homescreen_2.png") center / cover no-repeat;
+  box-shadow: none;
+}
+
+.menu-video {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.menu-art::before,
+.menu-art::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.menu-art::before {
+  background:
+    radial-gradient(ellipse at 50% 44%, rgba(8, 10, 6, 0.38) 0 22%, rgba(8, 10, 6, 0.08) 54%, transparent 72%),
+    linear-gradient(90deg, rgba(3, 5, 3, 0.42), transparent 24%, transparent 76%, rgba(3, 5, 3, 0.42));
+}
+
+.menu-art::after {
+  background:
+    radial-gradient(ellipse at center, transparent 38%, rgba(3, 5, 3, 0.48) 112%),
+    linear-gradient(180deg, rgba(2, 4, 2, 0.18), transparent 30%, rgba(2, 4, 2, 0.42));
+  opacity: 1;
+}
+
+.menu-content {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(28px, 6vh, 68px) 18px clamp(28px, 6vh, 64px);
+}
+
+.menu-title,
+.menu-actions {
+  position: relative;
+  z-index: 2;
+}
+
+.menu-title {
+  display: grid;
+  place-items: center;
+  width: min(760px, 84vw);
+  max-height: 29vh;
+  margin: 0 0 clamp(12px, 2vh, 24px);
+  animation: menuLogoReveal 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.menu-title img {
+  display: block;
+  width: 100%;
+  max-height: 29vh;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 1px rgba(45, 24, 10, 0.72)) drop-shadow(0 16px 18px rgba(0, 0, 0, 0.66));
+  user-select: none;
+}
+
+.menu-actions {
+  position: relative;
+  left: auto;
+  top: auto;
+  display: grid;
+  gap: clamp(12px, 2vh, 22px);
+  width: clamp(235px, 27vw, 365px);
+  height: auto;
+  transform: none;
+}
+
+.menu-actions button {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  filter: drop-shadow(0 8px 7px rgba(0, 0, 0, 0.58));
+  transform-origin: center;
+  transition: transform 150ms ease, filter 150ms ease;
+  animation: menuButtonReveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.menu-actions button:nth-child(1) {
+  animation-delay: 120ms;
+}
+
+.menu-actions button:nth-child(2) {
+  animation-delay: 190ms;
+}
+
+.menu-actions button:nth-child(3) {
+  animation-delay: 260ms;
+}
+
+.menu-actions button:nth-child(4) {
+  animation-delay: 330ms;
+}
+
+.menu-actions button img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.menu-actions .menu-credit-button {
+  aspect-ratio: 564 / 116;
+  overflow: hidden;
+}
+
+.menu-actions .menu-credit-button img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.menu-actions button:hover,
+.menu-actions button:focus-visible {
+  outline: none;
+  filter: brightness(1.16) saturate(1.08) drop-shadow(0 10px 9px rgba(0, 0, 0, 0.68)) drop-shadow(0 0 9px rgba(247, 202, 118, 0.55));
+  transform: translateY(-2px) scale(1.025);
+}
+
+.menu-actions button:focus-visible {
+  outline: 3px solid rgba(255, 223, 151, 0.92);
+  outline-offset: 3px;
+}
+
+.menu-actions button:active {
+  filter: brightness(0.95) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.56));
+  transform: translateY(2px) scale(0.985);
+}
+
+@keyframes menuLogoReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes menuButtonReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .startup-splash,
+  .main-menu,
+  .startup-progress span {
+    transition-duration: 120ms;
+  }
+
+  .startup-progress span::after {
+    animation: none;
+  }
+
+  .credits-box {
+    animation: none;
+  }
+
+  .menu-title,
+  .menu-actions button {
+    animation: none;
+    transition: none;
+  }
+}

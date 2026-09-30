@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Last Descent</title>
+  <link rel="icon" type="image/png" href="Assets TLD/background/faviconn.png?v=20260908" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Alegreya:wght@600;700;800;900&amp;family=Cinzel:wght@600;700;800;900&amp;display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=20260925-level1-items-extra-far" />
+</head>
+
+<body class="menu-open startup-loading" id="app">
+  <section class="startup-loader" id="startupLoader" aria-label="Memuat The Last Descent">
+    <div class="startup-splash startup-brand" id="startupBrandSplash" aria-hidden="true">
+      <img src="Assets TLD/background/cakrawalaa.png" alt="Cakrawala Project" />
+    </div>
+
+    <div class="startup-splash startup-game" id="startupGameSplash" aria-hidden="true">
+      <div class="startup-loading-art">
+        <img src="Assets TLD/background/loading_screen.png" alt="The Last Descent" />
+        <div class="startup-loading-panel">
+          <p class="visually-hidden">Setiap langkah kecil membawamu lebih dekat pada jawaban.</p>
+          <div class="startup-progress" id="startupProgress" role="progressbar" aria-label="Progres memuat permainan"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="startupProgressBar"></span>
+          </div>
+          <p class="startup-loading-status" id="startupLoadingStatus" aria-live="polite">Mempersiapkan aset permainan...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <button class="startup-fullscreen-prompt" id="startupFullscreenPrompt" type="button">
+      <span aria-hidden="true">&#x26F6;</span>
+      Klik untuk layar penuh
+    </button>
+    <button class="startup-enter-prompt" id="startupEnterPrompt" type="button" hidden>
+      KLIK UNTUK MASUK
+    </button>
+  </section>
+
+  <section class="main-menu" id="mainMenu" aria-label="Menu utama" aria-hidden="true" inert>
+    <div class="menu-art">
+      <video class="menu-video" id="menuVideo" autoplay muted loop playsinline preload="auto"
+        poster="Assets TLD/background/homescreen_2.png" aria-hidden="true">
+        <source src="Assets TLD/background/homescreen.mp4" type="video/mp4" />
+      </video>
+      <div class="menu-content">
+        <h1 class="menu-title">
+          <img src="Assets TLD/background/logo_thelastdescent.png" alt="The Last Descent" />
+        </h1>
+        <nav class="menu-actions" aria-label="Pilihan menu">
+          <button class="menu-image-button" id="menuStart" aria-label="Mulai permainan baru">
+            <img src="Assets TLD/items/buttonMulai.png" alt="" />
+            <span class="visually-hidden">Mulai permainan baru</span>
+          </button>
+          <button class="menu-image-button" id="menuLoad" aria-label="Lanjutkan permainan" disabled
+            aria-disabled="true">
+            <img src="Assets TLD/items/buttonLanjutkan.png" alt="" />
+            <span class="visually-hidden">Lanjutkan permainan</span>
+          </button>
+          <button class="menu-image-button" id="menuSettings" aria-label="Buka pengaturan">
+            <img src="Assets TLD/items/buttonPengaturan.png" alt="" />
+            <span class="visually-hidden">Buka pengaturan</span>
+          </button>
+          <button class="menu-image-button menu-credit-button" id="menuCredits" aria-label="Lihat kredit pengembang">
+            <img src="Assets TLD/items/buttonKredit3.png" alt="" />
+            <span class="visually-hidden">Lihat kredit pengembang</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="prologue hidden" id="prologue" aria-label="Prolog cerita">
+    <div class="prologue-scene">
+      <div class="prologue-card">
+        <div class="prologue-portrait-frame" aria-hidden="true">
+          <img class="prologue-portrait" id="prologuePortrait" src="Assets TLD/character/dialog_ayah_happy.png"
+            alt="" />
+        </div>
+        <div class="prologue-dialog-content">
+          <p class="eyebrow" id="prologueKicker">Prolog</p>
+          <h2 id="prologueTitle"></h2>
+          <p id="prologueText"></p>
+          <div class="prologue-footer">
+            <span id="prologueProgress"></span>
+            <div class="prologue-actions">
+              <button class="secondary" id="prologueSkip">LEWATI</button>
+              <button class="primary" id="prologueNext">LANJUT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="world-map side-scroller hidden" id="worldMap" aria-label="Hub peta dan area perjalanan Raka">
+    <div class="hub-map-screen" id="hubMapScreen">
+      <header class="hub-map-topbar">
+        <div class="hub-map-heading">
+          <p class="eyebrow">Peta Perjalanan</p>
+          <h2 id="hubMapTitle">Jejak yang Belum Terungkap</h2>
+        </div>
+        <div class="hub-map-status">
+          <div class="health-status compact" id="hubHealth" aria-label="HP Raka"></div>
+          <span class="hub-piece-count">PETA <strong id="hubMapPieces">0/5</strong></span>
+        </div>
+        <div class="hub-map-actions">
+          <button class="hub-control-button icon-button" id="hubSettings" aria-label="Buka pengaturan"
+            title="Pengaturan">&#9881;</button>
+        </div>
+      </header>
+
+      <main class="hub-map-stage" aria-label="Peta hub perjalanan Raka">
+        <div class="hub-map-board">
+          <img class="hub-map-base" src="Assets TLD/items/map.png" alt="Peta perjalanan yang masih gelap" />
+          <div class="hub-map-vignette" aria-hidden="true"></div>
+          <div class="hub-map-piece-layers" id="hubMapPieceLayers" aria-hidden="true"></div>
+          <nav class="hub-map-nodes" id="hubMapNodes" aria-label="Lokasi yang dapat dikunjungi"></nav>
+        </div>
+      </main>
+
+      <footer class="hub-map-footer">
+        <div>
+          <span id="hubMapProgress">0 dari 5 potongan ditemukan</span>
+          <strong id="hubMapInstruction">Klik bulatan Level 1 untuk melihat detail dan masuk ke Rumah Raka.</strong>
+        </div>
+        <button class="primary hub-continue" id="hubContinueEnding" type="button" hidden>
+          LANJUT KE AKHIR PERJALANAN
+        </button>
+      </footer>
+    </div>
+
+    <div class="map-backdrop legacy-side-map" id="mapBackdrop">
+      <div class="map-topbar">
+        <div>
+          <p class="eyebrow">Side Adventure</p>
+          <h2 id="mapPlaceName">Tempat Raka Bangkit</h2>
+        </div>
+        <div class="side-stats" aria-label="Status permainan">
+          <div class="health-status compact" id="sideHealth" aria-label="HP Raka"></div>
+          <strong id="sideLives" class="legacy-life-value" aria-hidden="true">3</strong>
+          <span>Peta <strong id="sideMapPieces">0/5</strong></span>
+        </div>
+        <button class="map-settings icon-button" id="mapSettings" aria-label="Settings"
+          title="Settings">&#9881;</button>
+      </div>
+      <div class="side-viewport">
+        <div class="side-world" id="mapRoute">
+          <div class="area-bg area-awakening"></div>
+          <div class="area-bg area-house"></div>
+          <div class="area-bg area-forest"></div>
+          <div class="area-bg area-river"></div>
+          <div class="area-bg area-heritage"></div>
+          <div class="area-bg area-cave"></div>
+          <div class="collision-debug-layer" id="collisionDebugLayer" aria-hidden="true"></div>
+          <div class="collision-debug-player" id="collisionDebugPlayer" aria-hidden="true">PLAYER</div>
+          <div class="side-object start-gate">START</div>
+          <div class="side-object house-object">Rumah Raka</div>
+          <div class="side-object fiber-tree">Pohon Serat</div>
+          <div class="side-object waterfall-crystal">Kristal</div>
+          <div class="side-object heritage-altar">Altar</div>
+          <div class="house-pickup pickup-wood" data-material="Kayu" aria-label="Kayu, tekan E untuk mengambil"></div>
+          <div class="house-pickup pickup-cloth" data-material="Kain" aria-label="Kain, tekan E untuk mengambil"></div>
+          <div class="house-pickup pickup-oil" data-material="Minyak" aria-label="Minyak, tekan E untuk mengambil">
+          </div>
+          <div class="house-pickup pickup-spark" data-material="Percikan"
+            aria-label="Percikan api, tekan E untuk mengambil"></div>
+          <div class="crafting-table-object" id="craftingTableObject">MEJA CRAFT</div>
+          <div class="forest-pickup forest-fiber-pickup" data-nature-material="Serat Tumbuhan"
+            aria-label="Serat tumbuhan, tekan E untuk mengambil"></div>
+          <div class="forest-pickup forest-wood-pickup" data-nature-material="Kayu Jembatan"
+            aria-label="Kayu jembatan, tekan E untuk mengambil"></div>
+          <div class="nature-craft-ground" aria-label="Tanah datar untuk merakit jembatan">TEMPAT MERAKIT JEMBATAN</div>
+          <div class="chasm-inspection-marker" aria-label="Tepi jurang, tekan E untuk memeriksa"><span>E</span></div>
+          <div class="light-pickup light-fragment-1" data-light-fragment="Pecahan Kaca 1"
+            aria-label="Pecahan kaca 1, tekan E untuk mengambil"></div>
+          <div class="light-pickup light-fragment-2" data-light-fragment="Pecahan Kaca 2"
+            aria-label="Pecahan kaca 2, tekan E untuk mengambil"></div>
+          <div class="light-pickup light-fragment-3" data-light-fragment="Pecahan Kaca 3"
+            aria-label="Pecahan kaca 3, tekan E untuk mengambil"></div>
+          <div class="light-pickup light-fragment-4" data-light-fragment="Pecahan Kaca 4"
+            aria-label="Pecahan kaca 4, tekan E untuk mengambil"></div>
+          <div class="light-pickup light-fragment-5" data-light-fragment="Pecahan Kaca 5"
+            aria-label="Pecahan kaca 5, tekan E untuk mengambil"></div>
+          <div class="light-door-marker" aria-label="Pintu cahaya, tekan E untuk memeriksa">
+            <span>E</span><b>PERIKSA PINTU CAHAYA</b></div>
+          <div class="heritage-pickup heritage-sun-pickup" data-heritage-material="Matahari"
+            aria-label="Batu Matahari, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-river-pickup" data-heritage-material="Sungai"
+            aria-label="Batu Sungai, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-mountain-pickup" data-heritage-material="Gunung"
+            aria-label="Batu Gunung, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-home-pickup" data-heritage-material="Rumah"
+            aria-label="Batu Rumah, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-fire-pickup" data-heritage-material="Api"
+            aria-label="Batu Api, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-leaf-pickup" data-heritage-material="Daun"
+            aria-label="Batu Daun, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-stone-pickup" data-heritage-material="Batu"
+            aria-label="Batu Simbol Batu, tekan E untuk mengambil"></div>
+          <div class="heritage-pickup heritage-moon-pickup" data-heritage-material="Bulan"
+            aria-label="Batu Bulan, tekan E untuk mengambil"></div>
+          <div class="heritage-door-marker" aria-label="Pintu lembah, tekan E untuk memeriksa">
+            <span>E</span><b>PERIKSA PINTU KUNO</b></div>
+          <div class="cave-door-marker" aria-label="Lorong Goa Purba, tekan E untuk memulai Trial of Survival">
+            <span>E</span><b>MASUK TRIAL OF SURVIVAL</b></div>
+          <div class="witch-companion" id="witchCompanion" aria-hidden="true">
+            <span class="witch-hat"></span>
+            <span class="witch-head"></span>
+            <span class="witch-body"></span>
+          </div>
+          <div class="witch-bubble" id="witchBubble">
+            <img class="dialog-bubble-portrait" src="Assets TLD/character/dialog_nenek_gentle.png" alt="" />
+            <div class="dialog-bubble-copy">
+              <strong>Cahaya Nenek</strong>
+              <span>Bangun, Raka... rumahmu ada di depan sana.</span>
+              <em>Klik / Enter / E untuk lanjut</em>
+            </div>
+          </div>
+          <div class="map-player side-player" id="mapPlayer" aria-hidden="true">
+            <span class="head"></span>
+            <span class="body"></span>
+            <span class="torch"></span>
+          </div>
+        </div>
+      </div>
+      <aside class="map-popup hidden" id="mapPopup" aria-live="polite">
+        <button class="map-popup-close icon-button" id="mapPopupClose" aria-label="Tutup info lokasi">x</button>
+        <p class="eyebrow" id="mapPopupKicker">Level 1</p>
+        <h3 id="mapPopupTitle">Rumah</h3>
+        <p id="mapPopupText"></p>
+        <button class="primary" id="mapPopupStart">MULAI LEVEL</button>
+        <p class="locked-note hidden" id="mapPopupNote"></p>
+      </aside>
+      <details class="map-prompt" id="mapGuide">
+        <summary>
+          <span class="map-guide-heading">
+            <small>PETUNJUK MISI</small>
+            <strong id="mapGuideTitle">Yang harus dilakukan</strong>
+          </span>
+          <span class="map-guide-summary">
+            <b id="mapGuideProgress">0/4</b>
+            <i aria-hidden="true">&#x2304;</i>
+          </span>
+        </summary>
+        <div class="map-guide-body" id="mapPrompt">
+          Cari Kayu, Kain, Minyak, dan Percikan api di dalam rumah.
+        </div>
+      </details>
+      <div class="collision-debug-hud" id="collisionDebugHud" aria-hidden="true">
+        <strong>COLLISION DEBUG · F2</strong>
+        <span id="collisionDebugInfo">X 0 · Y 0</span>
+        <small><i class="player"></i> Player <i class="solid"></i> Solid <i class="one-way"></i> One-way <i
+            class="trigger"></i> Trigger</small>
+      </div>
+    </div>
+  </section>
+
+  <main class="shell">
+    <section class="game" aria-label="The Last Descent">
+      <div class="scene" id="scene">
+        <div class="sky"></div>
+        <div class="mountains"></div>
+        <div class="path"></div>
+        <div class="raka" id="raka" aria-hidden="true">
+          <span class="head"></span>
+          <span class="body"></span>
+          <span class="torch"></span>
+        </div>
+        <div class="mist"></div>
+      </div>
+
+      <aside class="panel" aria-live="polite">
+        <header class="titlebar">
+          <p class="eyebrow">Kelompok 10</p>
+          <h1>The Last Descent</h1>
+        </header>
+
+        <div class="stats">
+          <div>
+            <span>Lokasi</span>
+            <strong id="locationName">Rumah</strong>
+          </div>
+          <div>
+            <span>HP</span>
+            <div class="health-status panel-health" id="panelHealth" aria-label="HP Raka"></div>
+            <strong id="lives" class="legacy-life-value" aria-hidden="true">3</strong>
+          </div>
+          <div>
+            <span>Peta</span>
+            <strong id="mapPieces">0/5</strong>
+          </div>
+        </div>
+
+        <div class="inventory" id="inventory" aria-label="Inventori"></div>
+
+        <div class="story">
+          <p id="storyText"></p>
+        </div>
+
+        <div class="controls">
+          <button class="primary" id="startTrial">Mulai Trial</button>
+          <button id="noteButton">Catatan Nenek</button>
+          <button id="resetButton" title="Ulangi permainan">Reset</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="route" id="route" aria-label="Rute perjalanan"></section>
+  </main>
+
+  <div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box" id="modalBox">
+      <button class="close" id="closeModal" aria-label="Tutup">x</button>
+      <p class="eyebrow" id="modalKicker"></p>
+      <h2 id="modalTitle"></h2>
+      <p id="modalText"></p>
+      <div id="trialMount"></div>
+    </div>
+  </div>
+
+  <section class="ending-sequence hidden" id="endingSequence" aria-label="Good ending dan kredit" aria-hidden="true">
+    <video class="ending-sequence-video happy-ending-video" id="happyEndingVideo" muted playsinline preload="auto"
+      aria-label="Video happy ending">
+      <source src="Assets TLD/background/video_happy_ending.mp4" type="video/mp4" />
+    </video>
+
+    <div class="ending-care-message" aria-live="polite">
+      <span>Makna di Balik Perjalanan</span>
+      <strong>“Kepedulian adalah keberanian untuk tetap mencari dan tidak menyerah.”</strong>
+      <p>Karena kasih yang terus dijaga, setiap langkah Raka akhirnya menemukan jalan pulang.</p>
+    </div>
+
+    <video class="ending-sequence-video credit-ending-video" id="creditEndingVideo" muted playsinline preload="auto"
+      aria-label="Video kredit">
+      <source src="Assets TLD/background/video_kredit_fix.mp4" type="video/mp4" />
+    </video>
+
+    <div class="ending-logo-stage" id="endingLogoStage" aria-hidden="true">
+      <img src="Assets TLD/background/logo_thelastdescent.png" alt="The Last Descent" />
+    </div>
+
+    <div class="credit-skip-hint" id="creditSkipHint" aria-hidden="true">
+      <span>TAHAN SPASI UNTUK MELEWATI KREDIT</span>
+      <i><b></b></i>
+    </div>
+  </section>
+
+  <section class="settings-overlay hidden" id="settingsOverlay" aria-label="Pengaturan audio, gameplay, dan tampilan">
+    <div class="settings-box">
+      <button class="settings-close icon-button" id="closeSettings" aria-label="Tutup settings">x</button>
+      <p class="eyebrow">Settings</p>
+      <h2>Audio, Gameplay &amp; Display</h2>
+      <div class="settings-control-group">
+        <label class="volume-row" for="mainVolumeSlider">
+          <span>Music Volume<small>Music dan backsound</small></span>
+          <strong id="mainVolumeValue">70%</strong>
+        </label>
+        <input class="audio-slider" id="mainVolumeSlider" type="range" min="0" max="100" value="70" />
+
+        <label class="volume-row" for="sfxVolumeSlider">
+          <span>SFX Volume<small>Klik, pickup, benturan, dan efek misi</small></span>
+          <strong id="sfxVolumeValue">70%</strong>
+        </label>
+        <input class="audio-slider" id="sfxVolumeSlider" type="range" min="0" max="100" value="70" />
+      </div>
+
+      <div class="settings-toggle-list">
+        <div class="settings-toggle-row settings-select-row">
+          <span><b>Dialogue Speed</b><small>Kecepatan teks dialog cerita</small></span>
+          <select class="settings-select" id="dialogueSpeedSelect" aria-label="Dialogue Speed">
+            <option value="slow">SLOW</option>
+            <option value="normal">NORMAL</option>
+            <option value="fast">FAST</option>
+          </select>
+        </div>
+        <div class="settings-toggle-row">
+          <span><b>Tutorial Hint</b><small>Tampilkan petunjuk misi dan bantuan kontekstual</small></span>
+          <button class="settings-toggle" id="tutorialHintToggle" type="button" role="switch" aria-checked="true">
+            <span class="settings-switch-track" aria-hidden="true"><i></i></span>
+            <strong id="tutorialHintValue">ON</strong>
+          </button>
+        </div>
+        <div class="settings-toggle-row">
+          <span><b>Screen Shake</b><small>Efek getaran saat benturan dan kesalahan</small></span>
+          <button class="settings-toggle" id="screenShakeToggle" type="button" role="switch" aria-checked="true">
+            <span class="settings-switch-track" aria-hidden="true"><i></i></span>
+            <strong id="screenShakeValue">ON</strong>
+          </button>
+        </div>
+        <div class="settings-toggle-row">
+          <span><b>Mute All</b><small>Matikan seluruh audio</small></span>
+          <button class="settings-toggle" id="muteAllToggle" type="button" role="switch" aria-checked="false">
+            <span class="settings-switch-track" aria-hidden="true"><i></i></span>
+            <strong id="muteAllValue">OFF</strong>
+          </button>
+        </div>
+        <div class="settings-toggle-row">
+          <span><b>Fullscreen (F)</b><small>Tampilkan game memenuhi layar</small></span>
+          <button class="settings-toggle" id="fullscreenToggle" type="button" role="switch" aria-checked="false">
+            <span class="settings-switch-track" aria-hidden="true"><i></i></span>
+            <strong id="fullscreenValue">OFF</strong>
+          </button>
+        </div>
+      </div>
+      <button class="danger-exit" id="exitToMenu">EXIT TO LOBBY</button>
+    </div>
+  </section>
+
+  <section class="credits-overlay hidden" id="creditsOverlay" role="dialog" aria-modal="true"
+    aria-labelledby="creditsTitle" aria-hidden="true">
+    <div class="credits-box">
+      <button class="settings-close icon-button credits-close" id="closeCredits" aria-label="Tutup kredit">x</button>
+      <p class="eyebrow">The Last Descent</p>
+      <h2 id="creditsTitle">Tim Pengembang</h2>
+      <p class="credits-intro">Orang-orang di balik perjalanan Raka.</p>
+
+      <div class="credits-list">
+        <article class="credit-card">
+          <span class="credit-number" aria-hidden="true">01</span>
+          <h3>Ghibran Rajendra Sianturi</h3>
+          <p>Lead Developer &amp; Game Programmer</p>
+          <a class="credit-instagram" href="https://www.instagram.com/ghibranrajs/" target="_blank"
+            rel="noopener noreferrer" aria-label="Buka Instagram Ghibran Rajendra Sianturi">
+            <img src="Assets TLD/items/instagram.png" alt="" /> Instagram
+          </a>
+        </article>
+
+        <article class="credit-card">
+          <span class="credit-number" aria-hidden="true">02</span>
+          <h3>Kaila Musyaffa</h3>
+          <p>Art Director &amp; UI/UX Designer</p>
+          <a class="credit-instagram" href="https://www.instagram.com/kaiisfv.a/" target="_blank"
+            rel="noopener noreferrer" aria-label="Buka Instagram Kaila Musyaffa">
+            <img src="Assets TLD/items/instagram.png" alt="" /> Instagram
+          </a>
+        </article>
+
+        <article class="credit-card">
+          <span class="credit-number" aria-hidden="true">03</span>
+          <h3>Muhamad Adli Irawan</h3>
+          <p>Game Designer &amp; Narrative Writer</p>
+          <a class="credit-instagram" href="https://www.instagram.com/mhmd_adli_i/" target="_blank"
+            rel="noopener noreferrer" aria-label="Buka Instagram Muhamad Adli Irawan">
+            <img src="Assets TLD/items/instagram.png" alt="" /> Instagram
+          </a>
+        </article>
+
+        <article class="credit-card credit-production-card">
+          <span class="credit-number" aria-hidden="true">04</span>
+          <h3>Software &amp; Musik</h3>
+          <p>Perangkat dan koleksi audio yang digunakan dalam pembuatan The Last Descent.</p>
+
+          <div class="credit-production-grid">
+            <section class="credit-production-section" aria-labelledby="creditSoftwareTitle">
+              <h4 id="creditSoftwareTitle">Software yang Digunakan</h4>
+              <ul class="credit-software-list">
+                <li>Visual Studio Code</li>
+                <li>HTML5</li>
+                <li>CSS3</li>
+                <li>JavaScript</li>
+                <li>Web Audio API</li>
+              </ul>
+            </section>
+
+            <section class="credit-production-section" aria-labelledby="creditMusicTitle">
+              <h4 id="creditMusicTitle">Musik dalam Game</h4>
+              <ol class="credit-music-list">
+                <li><span>Main Menu</span><small>Menu utama</small></li>
+                <li><span>Prolog Sedih</span><small>Prolog pembuka</small></li>
+                <li><span>Prolog Bahagia</span><small>Prolog kenangan</small></li>
+                <li><span>Main Song (Animasi Gerak)</span><small>Perjalanan</small></li>
+                <li><span>Misi 1</span><small>Trial api</small></li>
+                <li><span>Misi 2</span><small>Trial alam</small></li>
+                <li><span>Misi 3</span><small>Trial cahaya</small></li>
+                <li><span>Misi 4</span><small>Trial warisan</small></li>
+                <li><span>Misi 5</span><small>Trial suara</small></li>
+                <li><span>Happy Ending</span><small>Akhir baik</small></li>
+                <li><span>Bad Ending</span><small>Akhir buruk</small></li>
+                <li><span>Good Life Kredit</span><small>Credit ending</small></li>
+              </ol>
+              <p class="credit-sfx-note"><strong>Efek suara:</strong> Click 1, Click 2, dan Click 3.</p>
+            </section>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="pause-overlay hidden" id="pauseOverlay" aria-label="Game dijeda">
+    <div class="pause-box">
+      <p class="eyebrow">Game Paused</p>
+      <h2>Perjalanan Dijeda</h2>
+      <p>Progres terakhir sudah tersimpan. Lanjutkan saat kamu siap.</p>
+      <div class="pause-actions">
+        <button class="primary" id="resumeGame">LANJUTKAN GAME</button>
+        <button id="pauseSettings">PENGATURAN</button>
+        <button class="danger-exit" id="pauseExit">SIMPAN &amp; KELUAR KE HOMESCREEN</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="load-overlay hidden" id="loadOverlay" aria-label="Load game">
+    <div class="load-box">
+      <button class="settings-close icon-button" id="closeLoad" aria-label="Tutup load game">x</button>
+      <p class="eyebrow">Load Game</p>
+      <h2>Pilih Save History</h2>
+      <div class="save-list" id="saveList"></div>
+      <button class="show-more-saves" id="showMoreSaves" aria-expanded="false" hidden>
+        <span>TAMPILKAN LEBIH BANYAK</span><i class="save-toggle-arrow" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  <section class="confirm-overlay hidden" id="confirmOverlay" aria-label="Konfirmasi keluar">
+    <div class="confirm-box">
+      <p class="eyebrow">Exit to Lobby</p>
+      <h2>Yakin mau keluar?</h2>
+      <p>Progress kamu akan disimpan dan bisa dilanjutkan lagi lewat LOAD GAME.</p>
+      <div class="confirm-actions">
+        <button id="cancelExit">BATAL</button>
+        <button class="danger-exit" id="confirmExit">EXIT TO LOBBY</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core data dan sistem dasar -->
+  <script src="js/core/data.js?v=20260924-trial-audio"></script>
+  <script src="js/core/health.js?v=20260923-single-health-bar"></script>
+  <script src="js/core/startup.js?v=20260923-tutorial-collapsed"></script>
+  <script src="js/core/state.js?v=20260923-raka-path-polish"></script>
+
+  <!-- Map dan interaksi area, dipanggil sesuai urutan source lama -->
+  <script src="js/map/hub.js?v=20260924-house-ground-fix"></script>
+  <script src="js/levels/level-1-interactions.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-2-interactions.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-3-interactions.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-4-interactions.js?v=20260924-trial-audio"></script>
+  <script src="js/map/movement.js?v=20260923-raka-path-polish"></script>
+
+  <!-- UI, audio, cutscene, dan penyimpanan -->
+  <script src="js/ui/modal-timer.js?v=20260924-trial-audio"></script>
+  <script src="js/core/audio.js?v=20260924-trial-audio"></script>
+  <script src="js/ui/settings-menu.js?v=20260922-gameplay-settings"></script>
+  <script src="js/ui/cutscenes.js?v=20260923-raka-path-polish"></script>
+  <script src="js/core/save-system.js?v=20260923-raka-path-polish"></script>
+  <script src="js/core/progress-rewards.js?v=20260924-trial-audio"></script>
+
+  <!-- Gameplay tiap level -->
+  <script src="js/levels/router.js?v=20260922-level34-gate-fix"></script>
+  <script src="js/levels/level-1-fire.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-2-nature.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-3-light.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-4-heritage.js?v=20260924-trial-audio"></script>
+  <script src="js/levels/level-5-survival.js?v=20260924-trial-audio"></script>
+
+  <!-- Menu tambahan dan bootstrap harus dimuat paling akhir -->
+  <script src="js/ui/menu.js?v=20260923-raka-path-polish"></script>
+  <script src="js/core/bootstrap.js?v=20260922-door-inspection-flow"></script>
+</body>
+
+</html>
